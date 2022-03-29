@@ -35,10 +35,9 @@ def main():
 
   sampling_period = 1000 / SAMPLING_RATE_HZ # 2 ms (between each sample)
   # here a timestep is an occurence of a single sample
-  # number of timesteps in window of 300ms prior to a spike's occurence
-  #   (note: for this problem we ignore the stimulus value exactly 300ms prior to spike, and the one 0ms "prior")
-  num_timesteps = int((300 / sampling_period) - 2) # width (ms) of window to look at prior to each spike
-  import pdb; pdb.set_trace()
+  # number of timesteps in window of 300ms (which starts at the time of the spikes occurence, and goes backwards)
+  #   (note: for this problem we ignore the stimulus value exactly 300ms prior to spike)
+  num_timesteps = int((300 / sampling_period)) # width (ms) of window to look at prior to each spike
   print(f"num_timesteps = {num_timesteps}")
 
   total_spikes = len(rho[rho == 1]) # 53601
