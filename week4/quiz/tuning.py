@@ -13,6 +13,9 @@ def q7():
   print(data['stim'])
   print("\ndata['neuron1'] is a numpy.ndarray with shape: {}".format(data['neuron1'].shape))
 
+  fig, axis = plt.subplots(2, 2)
+  # map each neurone to a section of the plot:
+  plotMap = [(0,0), (0, 1), (1,0), (1,1)]
   # iterate over neurons
   tuningData = {}
   for n in range(1, 5):
@@ -27,13 +30,18 @@ def q7():
 
     # plot tuning curve for this neuron
     #   we want to see how its average firing rate (response) varies based on the stimuli
-    plt.clf()
-    plt.plot(data['stim'], tuningData[key])
-    plt.legend()
-    plt.xlabel('stimulus value')
-    plt.ylabel('average firing rate (over {} trials)'.format(len(data['stim'])))
-    plt.title('Tuning Curve: {}'.format(key))
-    plt.savefig("plot_{}.png".format(key), dpi=400)
+    splot = axis[plotMap[n-1]] # AxesSubPlot
+    #plt.clf()
+    splot.plot(data['stim'], tuningData[key])
+    #splot.legend()
+    splot.set_xlabel('stimulus value (air velocity direction)')
+    splot.set_ylabel('average firing rate Hz ({} trials)'.format(len(data['stim'])))
+    splot.set_title('Tuning Curve: {}'.format(key))
+
+  fig.tight_layout(h_pad=4)
+  plt.gcf().set_size_inches(11, 8.5)
+  plt.savefig("tuning_curves.png".format(key), dpi=400)
+  #plt.show()
 
 
 q7()
