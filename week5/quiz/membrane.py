@@ -1,5 +1,10 @@
+#!/usr/bin/env python3
 from __future__ import print_function
 """
+Here we simulate (using Euler's method) the membrane potential changing
+overtime in a cell.
+
+
 Created on Wed Apr 22 15:53:00 2015
 
 Charging and discharging curves for passive membrane patch
@@ -18,6 +23,15 @@ I = 10 # nA
 
 C = 0.1 # nF
 R = 100 # M ohms
+STOP_INJECTION = True
+
+#####
+# experiment controls:
+#R *= 10
+#C /= 10
+#STOP_INJECTION = False
+#####
+
 tau = R*C # = 0.1*100 nF-Mohms = 100*100 pF Mohms = 10 ms
 print('C = %.3f nF' % C)
 print('R = %.3f M ohms' % R)
@@ -36,6 +50,7 @@ h = 0.2 # ms (step size)
 V = 0 # mV
 V_trace = [V] # mV
 
+
 for t in np.arange(h, tstop, h):
 
    # Euler method: V(t+h) = V(t) + h*dV/dt
@@ -49,7 +64,7 @@ for t in np.arange(h, tstop, h):
 
    
    # Stop current injection 
-   if t >= 0.6*tstop:
+   if STOP_INJECTION and t >= 0.6*tstop:
      I = 0
 
    V_trace += [V]
@@ -58,5 +73,7 @@ for t in np.arange(h, tstop, h):
        plt.xlim(0, tstop)
        plt.ylim(0, V_inf)
        plt.draw()
-       
+
+plt.title(f"R={R:.2f}, C={C:.2f}, STOP_INJECTION={STOP_INJECTION}")
+plt.savefig("membrane.png", dpi=400)
 plt.show()
