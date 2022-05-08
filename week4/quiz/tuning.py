@@ -16,7 +16,7 @@ def q7_8():
   print("\ndata['neuron1'] is a numpy.ndarray with shape: {}".format(data['neuron1'].shape))
 
   fig, axis = plt.subplots(2, 2)
-  # map each neurone to a section of the plot:
+  # map each neuron to a section of the plot:
   plotMap = [(0,0), (0, 1), (1,0), (1,1)]
   # iterate over neurons
   tuningData = {}
