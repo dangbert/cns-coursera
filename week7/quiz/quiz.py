@@ -51,29 +51,52 @@ def q7():
     #ranOffset = np.array([random.gauss(0, 5), random.gauss(0, 5)])
     #cdata += ranOffset
     print(f"mean of centered data: {np.mean(cdata, axis=0)}")
-    #plotPoints(cdata, 'centered data')
+    plotPoints(cdata, 'centered data')
+
+    # compute input correlation matrix (for reference)
+    Q = np.zeros((2,2))
+    for n in range(len(cdata)):
+        Q += cdata[n].dot(cdata[n].transpose())
+    Q /= len(cdata)
+    print("correlation matrix (of centered data) Q = ")
+    print(Q)
+    evals, evecs = np.linalg.eig(Q)
+    print("Q: eigen values:")
+    print(evals)
+    print("Q: eigen vectors:")
+    print(evecs)
+    princIndex = list(evals).index(max(list(evals))) # principal index
 
     ETA = 1.0
     ALPHA = 1.0
-    #ALPHA = 0 # this turns Oja's rule into hebb's rule
-    DELTA_T = 0.001
+    DELTA_T = 0.01
     CYCLES = 100000
+    ojasRule = False # whether to use Oja's rule instead of hebb's rule
 
     # random start point for learning process
-    w = np.array([random.gauss(0, 5), random.gauss(0, 5)])
-    print(f'initial w: {w}')
+    w = np.array([random.gauss(0, 1), random.gauss(0, 1)])
+    print(f'\n\ninitial w: {w}')
     print(f'learning for {CYCLES} cycles...')
     for n in range(CYCLES):
         u = cdata[n % len(cdata)] # current data point
         v = w.dot(u) # output of neuron
         # discrete time implementation of Oja's rule
-        w = w + DELTA_T * ETA * (v * u - ALPHA * pow(v, 2) * w)
+        if ojasRule:
+            w = w + DELTA_T * ETA * (v * u)
+        else:
+            w = w + DELTA_T * ETA * (v * u - ALPHA * pow(v, 2) * w)
+        if n % (int(CYCLES/10)) == 0:
+            # preview how w changes over time...
+            #plotPoints(cdata, f'centered data with learned w (cycle {n})', w=w, save=False)
+            pass
     print(f'final w: {w}')
 
-    plotPoints(cdata, 'centered data with learned w', w=w)
+    # plot data, learned w, and principal eigen vector for Q
+    plotPoints(cdata, 'centered data with learned w', w=w, vecs=[evecs[:,princIndex]])
+    # TODO: TODO TODO: show in key the lambda value for each eigen vec
+    # or only show the principal eigen vec!
 
-
-def plotPoints(data, title, w=None, save=True):
+def plotPoints(data, title, w=None, save=True, vecs=[]):
     plt.clf()
     plt.scatter(data[:,0], data[:, 1])
     plt.xlabel('x')
@@ -81,7 +104,21 @@ def plotPoints(data, title, w=None, save=True):
     plt.title(title)
 
     if w is not None:
-      plt.scatter(w[0], w[1], s=100, cmap='Greens')
+        plt.scatter(w[0], w[1], s=100, cmap='Greens')
+        vecs.append(w)
+        #import pdb; pdb.set_trace()
+
+    if vecs is not None:
+      # vectors to draw as lines
+      for vec in vecs:
+          m = vec[1] / vec[0]
+          x = np.arange(0, 1, 0.1)
+          #if m > 0:
+          #    x = np.arange(0, vec[0], 0.1)
+          #else:
+          #    x = np.arange(0, vec[0], -0.1)
+          plt.plot(x, x * m)
+
 
     if save:
         fname = f"{title}.png".lower().replace(' ', '_')
