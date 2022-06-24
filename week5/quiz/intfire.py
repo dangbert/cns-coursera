@@ -38,18 +38,17 @@ V_th = 10     # spike threshold
 
 # run the model for tstop ms
 for t in range(tstop):
-  
-   if not ref:
-       V = V - (V/(R*C)) + (I/C)
-   else:
-       ref -= 1
-       V = 0.2 * V_th # reset voltage
-   
-   if V > V_th:
-       V = 50 # emit spike
-       ref = abs_ref # set refractory counter
+    if not ref:
+        V = V - (V/(R*C)) + (I/C)
+    else:
+        ref -= 1
+        V = 0.2 * V_th # reset voltage
+    
+    if V > V_th:
+        V = 50 # emit spike
+        ref = abs_ref # set refractory counter
 
-   V_trace += [V]
+    V_trace += [V]
 
 
 plt.plot(V_trace)
