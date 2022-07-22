@@ -16,10 +16,12 @@ import matplotlib.pyplot as plt
 
 
 # input current
-I_pA = 1000 # pA
+#I_pA = 1000 # pA
 #I_pA = 250  # smallest input current that fails to cause a spike
+I_pA = 5000
 
 I = I_pA / 1000 # nA (note 1 nano amp = 10^3 pico amps)
+print(f"I = {I}")
 
 # capacitance and leak resistance
 C = 1 # nF
